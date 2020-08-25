@@ -15,9 +15,9 @@ import com.tz.dao.BookDao;
 public class BookService {
 	
 	//@Qualifier("bookDao")
-	//@Autowired(required=false)
+	@Autowired(required=false)
 	//@Resource(name="bookDao2")
-	@Inject
+//	@Inject
 	private BookDao bookDao;
 	
 	public void print(){

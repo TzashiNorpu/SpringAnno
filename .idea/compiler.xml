@@ -11,8 +11,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
-      <module name="SpringMVCAnnotation" target="8" />
-      <module name="SpringMVCWithServlet" target="8" />
+      <module name="SpringMVCAnnotation" target="1.8" />
+      <module name="SpringMVCWithServlet" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
