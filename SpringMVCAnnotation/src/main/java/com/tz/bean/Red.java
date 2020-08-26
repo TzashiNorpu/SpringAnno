@@ -9,28 +9,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
 
 @Component
-public class Red implements ApplicationContextAware,BeanNameAware,EmbeddedValueResolverAware {
-	
-	private ApplicationContext applicationContext;
-
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		// TODO Auto-generated method stub
-		System.out.println("传入的ioc："+applicationContext);
-		this.applicationContext = applicationContext;
-	}
-
-	public void setBeanName(String name) {
-		// TODO Auto-generated method stub
-		System.out.println("当前bean的名字："+name);
-	}
-
-	public void setEmbeddedValueResolver(StringValueResolver resolver) {
-		// TODO Auto-generated method stub
-		String resolveStringValue = resolver.resolveStringValue("你好 ${os.name} 我是 #{20*18}");
-		System.out.println("解析的字符串："+resolveStringValue);
-	}
-
-
-
-
+public class Red implements ApplicationContextAware, BeanNameAware, EmbeddedValueResolverAware {
+    private ApplicationContext applicationContext;
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        System.out.println("传入的ioc：" + applicationContext);
+        this.applicationContext = applicationContext;
+    }
+    public void setBeanName(String name) {
+        System.out.println("当前bean的名字：" + name);
+    }
+    public void setEmbeddedValueResolver(StringValueResolver resolver) {
+        String resolveStringValue = resolver.resolveStringValue("你好 ${os.name} 我是 #{20*18}");
+        System.out.println("解析的字符串：" + resolveStringValue);
+    }
 }

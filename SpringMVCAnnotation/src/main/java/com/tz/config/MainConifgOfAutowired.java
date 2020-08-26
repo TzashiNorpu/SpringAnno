@@ -57,7 +57,8 @@ import com.tz.dao.BookDao;
  */
 @Configuration
 @ComponentScan({"com.tz.service","com.tz.dao",
-	"com.tz.controller","com.tz.bean"})
+	/*"com.tz.controller",*/
+		"com.tz.bean"})
 public class MainConifgOfAutowired {
 	
 	@Primary

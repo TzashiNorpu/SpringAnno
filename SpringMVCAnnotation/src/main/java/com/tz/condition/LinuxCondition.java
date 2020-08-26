@@ -14,6 +14,7 @@ public class LinuxCondition implements Condition {
 	 * ConditionContext：判断条件能使用的上下文（环境）
 	 * AnnotatedTypeMetadata：注释信息
 	 */
+	@Override
 	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
 		// TODO是否linux系统
 		//1、能获取到ioc使用的beanfactory

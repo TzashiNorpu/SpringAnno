@@ -15,9 +15,7 @@ public class MyTypeFilter implements TypeFilter {
 	 * metadataReader：读取到的当前正在扫描的类的信息
 	 * metadataReaderFactory:可以获取到其他任何类信息的
 	 */
-	public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory)
-			throws IOException {
-		// TODO Auto-generated method stub
+	public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) {
 		//获取当前类注解的信息
 		AnnotationMetadata annotationMetadata = metadataReader.getAnnotationMetadata();
 		//获取当前正在扫描的类的类信息
@@ -27,10 +25,11 @@ public class MyTypeFilter implements TypeFilter {
 		
 		String className = classMetadata.getClassName();
 		System.out.println("--->"+className);
-		if(className.contains("er")){
+		/*if(className.contains("er")){
+			// 这里退出会导致后续的 bean 不能加入到 IOC 容器中，部分 DI 逻辑报错
 			return true;
-		}
-		return false;
+		}*/
+		return true;
 	}
 
 }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.ComponentScans;
 
 import com.tz.bean.Person;
+import org.springframework.stereotype.Controller;
 
 //配置类==配置文件
 @Configuration  //告诉Spring这是一个配置类
@@ -15,10 +16,14 @@ import com.tz.bean.Person;
 @ComponentScans(
         value = {
                 @ComponentScan(value = "com.tz", includeFilters = {
-/*						@Filter(type=FilterType.ANNOTATION,classes={Controller.class}),
+                 					/*	@Filter(type=FilterType.ANNOTATION,classes={Controller.class}),
 						@Filter(type=FilterType.ASSIGNABLE_TYPE,classes={BookService.class}),*/
                         @Filter(type = FilterType.CUSTOM, classes = {MyTypeFilter.class})
-                }, useDefaultFilters = false)
+//                        拿到com.tz包下所有的待添加到容器的组件，对这些组件应用MyTypeFilter的过滤规则
+                }, useDefaultFilters = false),
+               /* @ComponentScan(value = "com.tz", excludeFilters = {
+                        @Filter(type = FilterType.ANNOTATION, classes = {Controller.class})
+                })*/
         }
 )
 //@ComponentScan  value:指定要扫描的包
@@ -34,7 +39,7 @@ public class MainConfig {
     //给容器中注册一个Bean;类型为返回值的类型，id默认是用方法名作为id
     @Bean("person")
     public Person person01() {
-        return new Person("lisi", 20, null);
+        return new Person("lisi", 20);
     }
 
 }

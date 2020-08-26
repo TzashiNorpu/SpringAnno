@@ -20,9 +20,6 @@ public class Person {
 	@Value("#{20-2}")
 	@NonNull
 	private Integer age;
-	
 	@Value("${person.nickName}")
 	private String nickName;
-
-
 }
