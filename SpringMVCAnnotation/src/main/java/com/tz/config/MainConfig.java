@@ -12,12 +12,17 @@ import org.springframework.stereotype.Controller;
 
 //配置类==配置文件
 @Configuration  //告诉Spring这是一个配置类
-
+/*
 @ComponentScans(
         value = {
                 @ComponentScan(value = "com.tz", includeFilters = {
+<<<<<<< HEAD
                  					/*	@Filter(type=FilterType.ANNOTATION,classes={Controller.class}),
 						@Filter(type=FilterType.ASSIGNABLE_TYPE,classes={BookService.class}),*/
+=======
+*//*						@Filter(type=FilterType.ANNOTATION,classes={Controller.class}),
+						@Filter(type=FilterType.ASSIGNABLE_TYPE,classes={BookService.class}),*//*
+>>>>>>> 4d36ea44b284a1819c99988660afab26eeaac763
                         @Filter(type = FilterType.CUSTOM, classes = {MyTypeFilter.class})
 //                        拿到com.tz包下所有的待添加到容器的组件，对这些组件应用MyTypeFilter的过滤规则
                 }, useDefaultFilters = false),
@@ -25,7 +30,7 @@ import org.springframework.stereotype.Controller;
                         @Filter(type = FilterType.ANNOTATION, classes = {Controller.class})
                 })*/
         }
-)
+)*/
 //@ComponentScan  value:指定要扫描的包
 //excludeFilters = Filter[] ：指定扫描的时候按照什么规则排除那些组件
 //includeFilters = Filter[] ：指定扫描的时候只需要包含哪些组件
