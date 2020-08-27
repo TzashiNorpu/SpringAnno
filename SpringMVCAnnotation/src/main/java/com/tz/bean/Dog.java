@@ -15,7 +15,7 @@ public class Dog implements ApplicationContextAware {
 	private ApplicationContext applicationContext;
 	
 	public Dog(){
-		System.out.println("dog constructor...");
+		System.out.println("dog construct...");
 	}
 	
 	//对象创建并赋值之后调用
@@ -26,15 +26,11 @@ public class Dog implements ApplicationContextAware {
 	
 	//容器移除对象之前
 	@PreDestroy
-	public void detory(){
+	public void destroy(){
 		System.out.println("Dog....@PreDestroy...");
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
-
-
-	
-
 }

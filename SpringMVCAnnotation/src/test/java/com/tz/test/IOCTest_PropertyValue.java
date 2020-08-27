@@ -5,7 +5,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.tz.bean.Person;
-import com.tz.config.MainConfigOfLifeCycle;
 import com.tz.config.MainConfigOfPropertyValues;
 
 public class IOCTest_PropertyValue {
@@ -13,7 +12,7 @@ public class IOCTest_PropertyValue {
 	@Test
 	public void test01(){
 		printBeans(applicationContext);
-		System.out.println("=============");
+		System.out.println("====================================================");
 		
 		Person person = (Person) applicationContext.getBean("person");
 		System.out.println(person);
@@ -28,7 +27,7 @@ public class IOCTest_PropertyValue {
 	private void printBeans(AnnotationConfigApplicationContext applicationContext){
 		String[] definitionNames = applicationContext.getBeanDefinitionNames();
 		for (String name : definitionNames) {
-			System.out.println(name);
+			System.out.println("bean----------------->"+name);
 		}
 	}
 

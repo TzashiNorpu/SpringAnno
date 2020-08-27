@@ -9,7 +9,7 @@ public class Blue {
         System.out.println("blue...init...");
     }
 
-    public void detory() {
-        System.out.println("blue...detory...");
+    public void destroy() {
+        System.out.println("blue...destroy...");
     }
 }
