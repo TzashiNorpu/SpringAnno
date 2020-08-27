@@ -5,11 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-<<<<<<< HEAD
-@Service("userServiceTx")
-=======
-@Service()
->>>>>>> 4d36ea44b284a1819c99988660afab26eeaac763
+
+@Service
 public class UserService {
 	
 	@Autowired
