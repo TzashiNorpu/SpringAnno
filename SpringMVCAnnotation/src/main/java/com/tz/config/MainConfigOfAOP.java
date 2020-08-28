@@ -2,12 +2,6 @@ package com.tz.config;
 
 
 
-import org.aopalliance.aop.Advice;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.springframework.aop.Advisor;
-import org.springframework.aop.Pointcut;
-import org.springframework.aop.framework.AopInfrastructureBean;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -27,12 +21,12 @@ import com.tz.aop.MathCalculator;
  * 			后置通知(@After)：logEnd：在目标方法(div)运行结束之后运行（无论方法正常结束还是异常结束）
  * 			返回通知(@AfterReturning)：logReturn：在目标方法(div)正常返回之后运行
  * 			异常通知(@AfterThrowing)：logException：在目标方法(div)出现异常以后运行
- * 			环绕通知(@Around)：动态代理，手动推进目标方法运行（joinPoint.procced()）
+ * 			环绕通知(@Around)：动态代理，手动推进目标方法运行（joinPoint.proceed()）
  * 4、给切面类的目标方法标注何时何地运行（通知注解）；
  * 5、将切面类和业务逻辑类（目标方法所在类）都加入到容器中;
- * 6、必须告诉Spring哪个类是切面类(给切面类上加一个注解：@Aspect)
- * [7]、给配置类中加 @EnableAspectJAutoProxy 【开启基于注解的aop模式】
- * 		在Spring中很多的 @EnableXXX;
+ * 6、<b>必须告诉Spring哪个类是切面类(给切面类上加一个注解：@Aspect)<b/>
+ * [7]、<b>给配置类中加 @EnableAspectJAutoProxy 【开启基于注解的aop模式】<b/>
+ * 		在Spring中很多的 @EnableXXX：开启某一项功能
  * 
  * 三步：
  * 	1）、将业务逻辑组件和切面类都加入到容器中；告诉Spring哪个是切面类（@Aspect）
@@ -40,13 +34,16 @@ import com.tz.aop.MathCalculator;
  *  3）、开启基于注解的aop模式；@EnableAspectJAutoProxy
  *  
  * AOP原理：【看给容器中注册了什么组件，这个组件什么时候工作，这个组件的功能是什么？】
- * 		@EnableAspectJAutoProxy；
+ * 		//@EnableAspectJAutoProxy；
  * 1、@EnableAspectJAutoProxy是什么？
- * 		@Import(AspectJAutoProxyRegistrar.class)：给容器中导入AspectJAutoProxyRegistrar
+ * 		//@Import(AspectJAutoProxyRegistrar.class)：给容器中导入AspectJAutoProxyRegistrar
  * 			利用AspectJAutoProxyRegistrar自定义给容器中注册bean；BeanDefinetion
- * 			internalAutoProxyCreator=AnnotationAwareAspectJAutoProxyCreator
+ * 			名字：internalAutoProxyCreator；类型：AnnotationAwareAspectJAutoProxyCreator
  * 
- * 		给容器中注册一个AnnotationAwareAspectJAutoProxyCreator；
+ * 		利用 @EnableAspectJAutoProxy 引入 AspectJAutoProxyRegistrar.java 类来给容器中注册一个
+ * 		名为 internalAutoProxyCreator 的，类型为 AnnotationAwareAspectJAutoProxyCreator 的组件
+ * 		(在 AopConfigUtils.java 的 123L 处：容器中如果不存在 AUTO_PROXY_CREATOR_BEAN_NAME 名字的 bean,则注册一个名字为 AUTO_PROXY_CREATOR_BEAN_NAME，类型为 传入参数的组件
+ * 		这个参数类型在 AopConfigUtils.java 的 100L 处传入)
  * 
  * 2、 AnnotationAwareAspectJAutoProxyCreator：
  * 		AnnotationAwareAspectJAutoProxyCreator
@@ -54,46 +51,49 @@ import com.tz.aop.MathCalculator;
  * 				->AbstractAdvisorAutoProxyCreator
  * 					->AbstractAutoProxyCreator
  * 							implements SmartInstantiationAwareBeanPostProcessor, BeanFactoryAware
- * 						关注后置处理器（在bean初始化完成前后做事情）、自动装配BeanFactory
- * 
- * AbstractAutoProxyCreator.setBeanFactory()
- * AbstractAutoProxyCreator.有后置处理器的逻辑；
- * 
- * AbstractAdvisorAutoProxyCreator.setBeanFactory()-》initBeanFactory()
- * 
- * AnnotationAwareAspectJAutoProxyCreator.initBeanFactory()
- *
+ * 						关注 后置处理器:BeanPostProcessor（在bean初始化完成前后做事情）、自动装配:BeanFactory
+ * 断点 debug 位置：
+ * 		AbstractAutoProxyCreator.setBeanFactory()：这是 BeanFactoryAware 接口的方法
+ * 		AbstractAutoProxyCreator.postProcessBefore/Afterxxx(有后置处理器的逻辑)
+ * 	下面两个位置断点
+ *  	AbstractAdvisorAutoProxyCreator.setBeanFactory()->initBeanFactory() 重写父类 BeanFactoryAware.setBeanFactory 方法， 调用了 initBeanFactory
+ *  		实际在调用的是子类也即下一行的 initBeanFactory 方法
+ *  	AnnotationAwareAspectJAutoProxyCreator.initBeanFactory()、
  *
  * 流程：
- * 		1）、传入配置类，创建ioc容器
- * 		2）、注册配置类，调用refresh（）刷新容器；
- * 		3）、registerBeanPostProcessors(beanFactory);注册bean的后置处理器来方便拦截bean的创建；
- * 			1）、先获取ioc容器已经定义了的需要创建对象的所有BeanPostProcessor
- * 			2）、给容器中加别的BeanPostProcessor
+ * 		1）、传入配置类，创建ioc容器  new AnnotationConfigApplicationContext(MainConfigOfAOP.class)
+ * 			ioc容器创建分为三步：无参构造器创建对象、注册配置类、调用refresh（）刷新容器 ，和 IOCTest_Profile 方法中的逻辑一致
+ * 					refresh（） 将 容器中的所有 bean 创建好
+ * 		2）、registerBeanPostProcessors(beanFactory);注册bean的后置处理器来方便拦截 bean 的创建；
+ * 			1）、先获取ioc容器已经定义了的所有的 BeanPostProcessor(此时只是定义)   当前是 internalAutoProxyCreator 的定义
+ * 			2）、给容器中加了别的BeanPostProcessor
+ * 			-----对所有的定义循环实现----
  * 			3）、优先注册实现了PriorityOrdered接口的BeanPostProcessor；
  * 			4）、再给容器中注册实现了Ordered接口的BeanPostProcessor；
  * 			5）、注册没实现优先级接口的BeanPostProcessor；
- * 			6）、注册BeanPostProcessor，实际上就是创建BeanPostProcessor对象，保存在容器中；
- * 				创建internalAutoProxyCreator的BeanPostProcessor【AnnotationAwareAspectJAutoProxyCreator】
- * 				1）、创建Bean的实例
- * 				2）、populateBean；给bean的各种属性赋值
- * 				3）、initializeBean：初始化bean；
- * 						1）、invokeAwareMethods()：处理Aware接口的方法回调
- * 						2）、applyBeanPostProcessorsBeforeInitialization()：应用后置处理器的postProcessBeforeInitialization（）
+ * 			6）、注册 BeanPostProcessor，实际上就是创建 BeanPostProcessor 对象，保存在容器中；
+ * 				创建 internalAutoProxyCreator的 BeanPostProcessor【AnnotationAwareAspectJAutoProxyCreator】
+ * 				1）、创建Bean的实例    AbstractAutowireCapableBeanFactory.java 558L
+ * 				2）、populateBean；给bean的各种属性赋值    AbstractAutowireCapableBeanFactory.java 593L
+ * 				3）、initializeBean：初始化bean；    AbstractAutowireCapableBeanFactory.java 594L
+ * 						1）、invokeAwareMethods()：处理 Aware 接口的方法回调     <b> AbstractAutowireCapableBeanFactory.java 1781L</b>
+ * 								 因为 AnnotationAwareAspectJAutoProxyCreator 实现了 BeanFactoryAware 接口，
+ * 								创建出来的 AnnotationAwareAspectJAutoProxyCreator 类型的 bean 在这里调用 AbstractAdvisorAutoProxyCreator.setBeanFactory() 方法
+ * 						2）、applyBeanPostProcessorsBeforeInitialization()：应用后置处理器的 postProcessBeforeInitialization()
  * 						3）、invokeInitMethods()；执行自定义的初始化方法
- * 						4）、applyBeanPostProcessorsAfterInitialization()；执行后置处理器的postProcessAfterInitialization（）；
- * 				4）、BeanPostProcessor(AnnotationAwareAspectJAutoProxyCreator)创建成功；--》aspectJAdvisorsBuilder
- * 			7）、把BeanPostProcessor注册到BeanFactory中；
+ * 						4）、applyBeanPostProcessorsAfterInitialization()；执行后置处理器的 postProcessAfterInitialization()
+ * 				4）、BeanPostProcessor(AnnotationAwareAspectJAutoProxyCreator)创建成功；--> aspectJAdvisorsBuilder
+ * 			7）、把 BeanPostProcessor 注册到 BeanFactory中；
  * 				beanFactory.addBeanPostProcessor(postProcessor);
  * =======以上是创建和注册AnnotationAwareAspectJAutoProxyCreator的过程========
  * 
  * 			AnnotationAwareAspectJAutoProxyCreator => InstantiationAwareBeanPostProcessor
- * 		4）、finishBeanFactoryInitialization(beanFactory);完成BeanFactory初始化工作；创建剩下的单实例bean
+ * 		4）、finishBeanFactoryInitialization(beanFactory);完成 BeanFactory 初始化工作:也即创建剩下的单实例bean
  * 			1）、遍历获取容器中所有的Bean，依次创建对象getBean(beanName);
  * 				getBean->doGetBean()->getSingleton()->
  * 			2）、创建bean
  * 				【AnnotationAwareAspectJAutoProxyCreator在所有bean创建之前会有一个拦截，InstantiationAwareBeanPostProcessor，会调用postProcessBeforeInstantiation()】
- * 				1）、先从缓存中获取当前bean，如果能获取到，说明bean是之前被创建过的，直接使用，否则再创建；
+ * 				1）、先从缓存中获取当前bean，如果能获取到，说明bean是之前被创建过的，直接使用，否则再创建 --->  但实例 bean 只创建一次的逻辑实现
  * 					只要创建好的Bean都会被缓存起来
  * 				2）、createBean（）;创建bean；
  * 					AnnotationAwareAspectJAutoProxyCreator 会在任何bean创建之前先尝试返回bean的实例
@@ -109,14 +109,14 @@ import com.tz.aop.MathCalculator;
 								bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 							}
  * 
- * 					2）、doCreateBean(beanName, mbdToUse, args);真正的去创建一个bean实例；和3.6流程一样；
+ * 					2）、doCreateBean(beanName, mbdToUse, args);真正的去创建一个bean实例；和2.6流程一样；
  * 					3）、
  * 			
  * 		
  * AnnotationAwareAspectJAutoProxyCreator【InstantiationAwareBeanPostProcessor】	的作用：
  * 1）、每一个bean创建之前，调用postProcessBeforeInstantiation()；
  * 		关心MathCalculator和LogAspect的创建
- * 		1）、判断当前bean是否在advisedBeans中（保存了所有需要增强bean）
+ * 		1）、判断当前bean是否在advisedBeans中（保存了所有需要增强的 bean）
  * 		2）、判断当前bean是否是基础类型的Advice、Pointcut、Advisor、AopInfrastructureBean，
  * 			或者是否是切面（@Aspect）
  * 		3）、是否需要跳过

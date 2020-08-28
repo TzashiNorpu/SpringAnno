@@ -3,6 +3,7 @@ package com.tz.config;
 
 import javax.sql.DataSource;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +29,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * 2）、写在配置类上，只有是指定的环境的时候，整个配置类里面的所有配置才能开始生效
  * 3）、没有标注环境标识的bean在，任何环境下都是加载的；
  */
-
+//@Profile("test")
 @PropertySource("classpath:/dbconfig.properties")
 @Configuration
 public class MainConfigOfProfile implements EmbeddedValueResolverAware{
@@ -42,6 +43,7 @@ public class MainConfigOfProfile implements EmbeddedValueResolverAware{
 	
 	
 	@Bean
+	// 没有标注 @Profile，所有环境都会注册到 IOC 中
 	public Yellow yellow(){
 		return new Yellow();
 	}
@@ -52,7 +54,7 @@ public class MainConfigOfProfile implements EmbeddedValueResolverAware{
 		ComboPooledDataSource dataSource = new ComboPooledDataSource();
 		dataSource.setUser(user);
 		dataSource.setPassword(pwd);
-		dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/test");
+		dataSource.setJdbcUrl("jdbc:mysql://101.200.210.117:3306/jdbc");
 		dataSource.setDriverClass(driverClass);
 		return dataSource;
 	}
@@ -61,11 +63,12 @@ public class MainConfigOfProfile implements EmbeddedValueResolverAware{
 	@Profile("dev")
 	@Bean("devDataSource")
 	public DataSource dataSourceDev(@Value("${db.password}")String pwd) throws Exception{
-		ComboPooledDataSource dataSource = new ComboPooledDataSource();
-		dataSource.setUser(user);
+//		ComboPooledDataSource dataSource = new ComboPooledDataSource();
+		DruidDataSource dataSource = new DruidDataSource();
+		dataSource.setUsername(user);
 		dataSource.setPassword(pwd);
-		dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/ssm_crud");
-		dataSource.setDriverClass(driverClass);
+		dataSource.setUrl("jdbc:mysql://101.200.210.117:3306/dev");
+		dataSource.setDriverClassName(driverClass);
 		return dataSource;
 	}
 	
@@ -75,14 +78,12 @@ public class MainConfigOfProfile implements EmbeddedValueResolverAware{
 		ComboPooledDataSource dataSource = new ComboPooledDataSource();
 		dataSource.setUser(user);
 		dataSource.setPassword(pwd);
-		dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/scw_0515");
+		dataSource.setJdbcUrl("jdbc:mysql://101.200.210.117:3306/prod");
 		
 		dataSource.setDriverClass(driverClass);
 		return dataSource;
 	}
-
 	public void setEmbeddedValueResolver(StringValueResolver resolver) {
-		// TODO Auto-generated method stub
 		this.valueResolver = resolver;
 		driverClass = valueResolver.resolveStringValue("${db.driverClass}");
 	}

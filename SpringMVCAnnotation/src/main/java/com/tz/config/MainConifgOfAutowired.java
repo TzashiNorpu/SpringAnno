@@ -21,7 +21,7 @@ import com.tz.dao.BookDao;
  * 3）、@Qualifier("bookDao")：使用@Qualifier指定需要装配的组件的id，而不是使用属性名
  * 4）、自动装配默认一定要将属性赋值好，没有就会报错；
  * 可以使用@Autowired(required=false);
- * 5）、@Primary：让Spring进行自动装配的时候，默认使用首选的bean,而不管组件的 id，当然在需要自动注入的组件处指定了组件名称@Qualifier，则 Qualifier 生效；
+ * 5）、@Primary：让Spring进行自动装配的时候，默认使用首选的bean,而不管组件的 id（同类型的组件注入都优先使用这个 bean），当然在需要自动注入的组件处指定了组件名称@Qualifier，则 Qualifier 生效；
  * 也可以继续使用@Qualifier指定需要装配的bean的名字
  * <p>
  * 2）、Spring还支持使用@Resource(JSR250)和@Inject(JSR330)[java规范的注解]
@@ -38,12 +38,11 @@ import com.tz.dao.BookDao;
  * 1）、[标注在方法位置]： 参数从容器中获取;默认不写@Autowired效果是一样的；都能自动装配；--> Boss.java:25L
  * 2）、[标在构造器上]：如果组件只有一个有参构造器，这个有参构造器的@Autowired可以省略，参数位置的组件还是可以自动从容器中获取
  * 3）、放在参数位置：public void setCar(@Autowired Car car) {} and @Bean+方法参数(见下面代码 71L )；参数从容器中获取;默认不写@Autowired效果是一样的；都能自动装配
- * <p>
- * <p>
+ *
  * 4）、自定义组件想要使用Spring容器底层的一些组件（ApplicationContext，BeanFactory，xxx）；
- * 自定义组件实现xxxAware；在创建对象的时候，会调用接口规定的方法注入相关组件；Aware；
+ * 自定义组件实现xxxAware；在创建对象的时候，会调用接口规定的方法注入相关组件；  总接口Aware；
  * 把Spring底层一些组件注入到自定义的Bean中；
- * xxxAware：功能使用xxxProcessor；
+ * xxxAware的功能使用 xxxAwareProcessor实现，这些 xxxAwareProcessor 都是 BeanPostProcessor 接口的实现；
  * ApplicationContextAware==》ApplicationContextAwareProcessor；
  */
 @Configuration

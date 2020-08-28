@@ -12,15 +12,18 @@ import org.springframework.util.StringValueResolver;
 public class Red implements ApplicationContextAware, BeanNameAware, EmbeddedValueResolverAware {
     private ApplicationContext applicationContext;
     @Override
+    //ApplicationContextAware
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         System.out.println("传入的ioc：" + applicationContext);
         this.applicationContext = applicationContext;
     }
     @Override
+    // BeanNameAware
     public void setBeanName(String name) {
         System.out.println("当前bean的名字：" + name);
     }
     @Override
+    // EmbeddedValueResolverAware 可以解析配置文件中的值
     public void setEmbeddedValueResolver(StringValueResolver resolver) {
         String resolveStringValue = resolver.resolveStringValue("你好 ${os.name} 我是 #{20*18}");
         System.out.println("解析的字符串：" + resolveStringValue);
