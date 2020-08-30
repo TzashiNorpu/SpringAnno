@@ -25,7 +25,7 @@ public class IOCTest_AOP {
 //		从容器中获取的 bean 才有 切面功能
 		MathCalculator mathCalculator = applicationContext.getBean(MathCalculator.class);
 		
-		mathCalculator.div(1, 0);
+		mathCalculator.div(1,1);
 		
 		applicationContext.close();
 	}
