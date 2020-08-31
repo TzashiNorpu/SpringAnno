@@ -1,11 +1,11 @@
 Spring容器的refresh()【创建刷新】;
 1、prepareRefresh()刷新前的预处理;
-	1）、initPropertySources()初始化一些属性设置;子类自定义个性化的属性设置方法；
+	1）、initPropertySources()初始化一些属性设置;子类自定义个性化的属性设置方法：实现AnnotationConfigApplicationContext.java的子类，自己重写这个方法
 	2）、getEnvironment().validateRequiredProperties();检验属性的合法等
 	3）、earlyApplicationEvents= new LinkedHashSet<ApplicationEvent>();保存容器中的一些早期的事件；
 2、obtainFreshBeanFactory();获取BeanFactory；
 	1）、refreshBeanFactory();刷新【创建】BeanFactory；
-			创建了一个this.beanFactory = new DefaultListableBeanFactory();
+			<b>创建了一个this.beanFactory = new DefaultListableBeanFactory();</b>
 			设置id；
 	2）、getBeanFactory();返回刚才GenericApplicationContext创建的BeanFactory对象；
 	3）、将创建的BeanFactory【DefaultListableBeanFactory】返回；
@@ -17,12 +17,12 @@ Spring容器的refresh()【创建刷新】;
 			BeanFactory、ResourceLoader、ApplicationEventPublisher、ApplicationContext
 	5）、添加BeanPostProcessor【ApplicationListenerDetector】
 	6）、添加编译时的AspectJ；
-	7）、给BeanFactory中注册一些能用的组件；
+	7）、给BeanFactory中注册一些能用的组件,后续要用可以直接　Autowire
 		environment【ConfigurableEnvironment】、
 		systemProperties【Map<String, Object>】、
 		systemEnvironment【Map<String, Object>】
 4、postProcessBeanFactory(beanFactory);BeanFactory准备工作完成后进行的后置处理工作；
-	1）、子类通过重写这个方法来在BeanFactory创建并预准备完成以后做进一步的设置
+	1）、子类通过重写这个方法来在BeanFactory(现在是空方法)创建并预准备完成以后做进一步的设置
 ======================以上是BeanFactory的创建及预准备工作==================================
 5、invokeBeanFactoryPostProcessors(beanFactory);执行BeanFactoryPostProcessor的方法；
 	BeanFactoryPostProcessor ：BeanFactory的后置处理器。在BeanFactory标准初始化之后执行的；
