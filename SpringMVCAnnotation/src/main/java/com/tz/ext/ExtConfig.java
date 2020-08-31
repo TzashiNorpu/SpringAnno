@@ -1,15 +1,9 @@
 package com.tz.ext;
 
-import java.util.concurrent.Executor;
 
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.SimpleApplicationEventMulticaster;
 
 import com.tz.bean.Blue;
 
@@ -51,7 +45,7 @@ import com.tz.bean.Blue;
  * 
  * 	 步骤：
  * 		1）、写一个监听器（ApplicationListener实现类）来监听某个事件（ApplicationEvent及其子类）
- * 			@EventListener;
+ * 			// @EventListener;
  * 			原理：使用EventListenerMethodProcessor处理器来解析方法上的@EventListener；
  * 
  * 		2）、把监听器加入到容器；
@@ -113,5 +107,4 @@ public class ExtConfig {
 	public Blue blue(){
 		return new Blue();
 	}
-
 }

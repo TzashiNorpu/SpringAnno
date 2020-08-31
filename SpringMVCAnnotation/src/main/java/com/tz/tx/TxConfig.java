@@ -4,6 +4,7 @@ import java.beans.PropertyVetoException;
 
 import javax.sql.DataSource;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.aop.framework.autoproxy.InfrastructureAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
@@ -42,13 +43,14 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * 			AutoProxyRegistrar
  * 			ProxyTransactionManagementConfiguration
  * 2）、AutoProxyRegistrar：
- * 			给容器中注册一个 InfrastructureAdvisorAutoProxyCreator 组件；
- * 			InfrastructureAdvisorAutoProxyCreator：？
+ * 			给容器中注册一个 InfrastructureAdvisorAutoProxyCreator 组件； 和 AnnotationAwareAspectJAutoProxyCreator 的逻辑一样
+ * 			InfrastructureAdvisorAutoProxyCreator：
  * 			利用后置处理器机制在对象创建以后，包装对象，返回一个代理对象（增强器），代理对象执行方法利用拦截器链进行调用；
  * 
  * 3）、ProxyTransactionManagementConfiguration 做了什么？
  * 			1、给容器中注册事务增强器；
- * 				1）、事务增强器要用事务注解的信息，AnnotationTransactionAttributeSource解析事务注解
+ * 				1）、事务增强器要用事务注解的信息，AnnotationTransactionAttributeSource(AnnotationTransactionAttributeSource)解析事务注解
+ * 							SpringTransactionAnnotationParser.parseTransactionAnnotation
  * 				2）、事务拦截器：
  * 					TransactionInterceptor；保存了事务属性信息，事务管理器；
  * 					他是一个 MethodInterceptor；
@@ -71,11 +73,11 @@ public class TxConfig {
 	//数据源
 	@Bean
 	public DataSource dataSource() throws Exception{
-		ComboPooledDataSource dataSource = new ComboPooledDataSource();
-		dataSource.setUser("root");
+		DruidDataSource dataSource = new DruidDataSource();
+		dataSource.setUsername("root");
 		dataSource.setPassword("123456");
-		dataSource.setDriverClass("com.mysql.jdbc.Driver");
-		dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/test");
+		dataSource.setUrl("jdbc:mysql://101.200.210.117:3306/dev");
+		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 		return dataSource;
 	}
 	

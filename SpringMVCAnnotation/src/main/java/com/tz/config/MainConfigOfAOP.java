@@ -136,7 +136,7 @@ import com.tz.aop.MathCalculator;
  * 		3）、如果当前bean需要增强，创建当前bean的代理对象；
  * 			1）、获取所有增强器（通知方法）
  * 			2）、保存到proxyFactory
- * 			3）、创建代理对象：Spring自动决定
+ * 			3）、创建代理对象：Spring自动决定  DefaultAopProxyFactory.createAopProxy()
  * 				JdkDynamicAopProxy(config);jdk动态代理；
  * 				ObjenesisCglibAopProxy(config);cglib的动态代理；
  * 		4）、给容器中返回当前组件使用cglib增强了的代理对象；
@@ -172,7 +172,7 @@ import com.tz.aop.MathCalculator;
  * 		2）、 @EnableAspectJAutoProxy 会给容器中注册一个组件 AnnotationAwareAspectJAutoProxyCreator
  * 		3）、AnnotationAwareAspectJAutoProxyCreator是一个后置处理器；
  * 		4）、容器的创建流程：
- * 			1）、registerBeanPostProcessors（）注册后置处理器；创建AnnotationAwareAspectJAutoProxyCreator对象
+ * 			1）、refresh 调用 registerBeanPostProcessors（）注册后置处理器；创建AnnotationAwareAspectJAutoProxyCreator对象
  * 			2）、finishBeanFactoryInitialization（）初始化剩下的单实例bean
  * 				1）、创建业务逻辑组件和切面组件
  * 				2）、AnnotationAwareAspectJAutoProxyCreator拦截组件的创建过程
